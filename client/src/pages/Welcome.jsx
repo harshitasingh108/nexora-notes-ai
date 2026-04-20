@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router-dom";
 function Welcome() {
+    const navigate = useNavigate();
     return (
         <div className="relative h-screen flex items-center justify-between bg-black text-white px-10 overflow-hidden">
 
@@ -19,6 +21,11 @@ function Welcome() {
                 <button className="px-8 py-3 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-110 transition shadow-xl">
                     Get Started
                 </button>
+
+                <button onClick={() => navigate("/login")} className="px-6 py-3 rounded-full font-semibold text-white 
+  bg-white/10 backdrop-blur-lg border border-white/20 
+  hover:bg-white/20 hover:scale-105 
+  transition duration-300 shadow-lg mx-5">Login</button>
             </div>
 
 
