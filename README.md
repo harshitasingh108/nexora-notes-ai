@@ -19,8 +19,10 @@ A full-stack AI-powered notes application built using MERN stack.
 
 ## 🌍 Live Links
 
-- Frontend: https://your-vercel-link
-- Backend: https://your-render-link
+- Frontend:https://nexora-notes-ai-aztj.vercel.app/
+- Backend:https://nexora-notes-ai.onrender.com
+
+
 
 ## 📌 Author
 
