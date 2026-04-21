@@ -10,6 +10,9 @@ function Dashboard() {
 
     const navigate = useNavigate();
 
+    // 🔥 BACKEND URL (IMPORTANT)
+    const BASE_URL = "https://nexora-notes-ai.onrender.com";
+
     // 🔐 Protect Dashboard
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -25,7 +28,7 @@ function Dashboard() {
 
     const fetchNotes = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/notes");
+            const res = await axios.get(`${BASE_URL}/notes`);
             setNotes(res.data);
         } catch (err) {
             console.log(err);
@@ -37,7 +40,7 @@ function Dashboard() {
         if (!input.trim()) return;
 
         try {
-            await axios.post("http://localhost:5000/notes", {
+            await axios.post(`${BASE_URL}/notes`, {
                 title: input,
             });
 
@@ -51,14 +54,14 @@ function Dashboard() {
     // ❌ Delete Note
     const deleteNote = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/notes/${id}`);
+            await axios.delete(`${BASE_URL}/notes/${id}`);
             fetchNotes();
         } catch (err) {
             console.log(err);
         }
     };
 
-    // 🤖 Chat (REAL API)
+    // 🤖 Chat (AI)
     const sendMessage = async () => {
         if (!message.trim()) return;
 
@@ -68,7 +71,7 @@ function Dashboard() {
         setMessage("");
 
         try {
-            const res = await axios.post("http://localhost:5000/chat", {
+            const res = await axios.post(`${BASE_URL}/chat`, {
                 message: userMsg,
             });
 
@@ -89,7 +92,6 @@ function Dashboard() {
             <div className="w-1/2 p-5 border-r border-white/10 overflow-y-auto">
                 <h2 className="text-xl font-semibold mb-4">Your Notes 📝</h2>
 
-                {/* Input */}
                 <div className="flex gap-2 mb-4">
                     <input
                         value={input}
@@ -106,7 +108,6 @@ function Dashboard() {
                     </button>
                 </div>
 
-                {/* Notes */}
                 {notes.map((note) => (
                     <div
                         key={note._id}
@@ -140,7 +141,6 @@ function Dashboard() {
                     </button>
                 </div>
 
-                {/* Chat Box */}
                 <div className="flex-1 bg-white/10 p-3 rounded mb-3 overflow-y-auto">
                     {chat.map((msg, index) => (
                         <div
@@ -159,7 +159,6 @@ function Dashboard() {
                     ))}
                 </div>
 
-                {/* Input */}
                 <div className="flex gap-2">
                     <input
                         value={message}
