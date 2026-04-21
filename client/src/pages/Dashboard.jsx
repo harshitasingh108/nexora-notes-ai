@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
     const [notes, setNotes] = useState([]);
@@ -7,7 +8,17 @@ function Dashboard() {
     const [message, setMessage] = useState("");
     const [chat, setChat] = useState([]);
 
-    // 🔥 Fetch Notes from Backend
+    const navigate = useNavigate();
+
+    // 🔐 Protect Dashboard
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+        }
+    }, []);
+
+    // 🔥 Fetch Notes
     useEffect(() => {
         fetchNotes();
     }, []);
@@ -21,7 +32,7 @@ function Dashboard() {
         }
     };
 
-    // 🔥 Add Note
+    // ➕ Add Note
     const addNote = async () => {
         if (!input.trim()) return;
 
@@ -37,7 +48,7 @@ function Dashboard() {
         }
     };
 
-    // 🔥 Delete Note
+    // ❌ Delete Note
     const deleteNote = async (id) => {
         try {
             await axios.delete(`http://localhost:5000/notes/${id}`);
@@ -47,20 +58,28 @@ function Dashboard() {
         }
     };
 
-    // 🔥 Chat
-    const sendMessage = () => {
+    // 🤖 Chat (REAL API)
+    const sendMessage = async () => {
         if (!message.trim()) return;
 
-        const newChat = [...chat, { text: message, type: "user" }];
-        setChat(newChat);
+        const userMsg = message;
+
+        setChat([...chat, { text: userMsg, type: "user" }]);
         setMessage("");
 
-        setTimeout(() => {
+        try {
+            const res = await axios.post("http://localhost:5000/chat", {
+                message: userMsg,
+            });
+
             setChat((prev) => [
                 ...prev,
-                { text: "AI response coming soon 🤖", type: "ai" },
+                { text: res.data.reply, type: "ai" },
             ]);
-        }, 500);
+
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     return (
@@ -87,7 +106,7 @@ function Dashboard() {
                     </button>
                 </div>
 
-                {/* Notes List */}
+                {/* Notes */}
                 {notes.map((note) => (
                     <div
                         key={note._id}
@@ -107,20 +126,31 @@ function Dashboard() {
 
             {/* RIGHT - CHAT */}
             <div className="w-1/2 p-5 flex flex-col">
-                <h2 className="text-xl font-semibold mb-4">AI Assistant 🤖</h2>
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">AI Assistant 🤖</h2>
+
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem("token");
+                            navigate("/login");
+                        }}
+                        className="bg-red-500 px-4 py-2 rounded-lg"
+                    >
+                        Logout 🚪
+                    </button>
+                </div>
 
                 {/* Chat Box */}
                 <div className="flex-1 bg-white/10 p-3 rounded mb-3 overflow-y-auto">
                     {chat.map((msg, index) => (
                         <div
                             key={index}
-                            className={`mb-2 ${msg.type === "user" ? "text-right" : "text-left"
-                                }`}
+                            className={`mb-2 ${msg.type === "user" ? "text-right" : "text-left"}`}
                         >
                             <span
                                 className={`inline-block px-3 py-2 rounded ${msg.type === "user"
-                                    ? "bg-purple-500"
-                                    : "bg-gray-700"
+                                        ? "bg-purple-500"
+                                        : "bg-gray-700"
                                     }`}
                             >
                                 {msg.text}
@@ -129,7 +159,7 @@ function Dashboard() {
                     ))}
                 </div>
 
-                {/* Chat Input */}
+                {/* Input */}
                 <div className="flex gap-2">
                     <input
                         value={message}
@@ -143,15 +173,6 @@ function Dashboard() {
                         className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded hover:scale-105 transition"
                     >
                         Send
-                    </button>
-                    <button
-                        onClick={() => {
-                            localStorage.removeItem("token");
-                            navigate("/login");
-                        }}
-                        className="bg-red-500 px-4 py-2 rounded-lg"
-                    >
-                        Logout 🚪
                     </button>
                 </div>
             </div>
