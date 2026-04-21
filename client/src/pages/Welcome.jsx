@@ -36,7 +36,7 @@ function Welcome() {
             </div>
             <div className="z-10 hidden md:block">
                 <img
-                    src="./image.png"
+                    src="/unnamed.png"
                     alt="AI"
                     className="w-[400px] animate-bounce"
                 />
