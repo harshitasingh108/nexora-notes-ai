@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Dashboard() {
     const [notes, setNotes] = useState([]);
@@ -6,20 +7,47 @@ function Dashboard() {
     const [message, setMessage] = useState("");
     const [chat, setChat] = useState([]);
 
-    // Add Note
-    const addNote = () => {
+    // 🔥 Fetch Notes from Backend
+    useEffect(() => {
+        fetchNotes();
+    }, []);
+
+    const fetchNotes = async () => {
+        try {
+            const res = await axios.get("http://localhost:5000/notes");
+            setNotes(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    // 🔥 Add Note
+    const addNote = async () => {
         if (!input.trim()) return;
-        setNotes([...notes, input]);
-        setInput("");
+
+        try {
+            await axios.post("http://localhost:5000/notes", {
+                title: input,
+            });
+
+            setInput("");
+            fetchNotes();
+        } catch (err) {
+            console.log(err);
+        }
     };
 
-    // Delete Note
-    const deleteNote = (index) => {
-        const updated = notes.filter((_, i) => i !== index);
-        setNotes(updated);
+    // 🔥 Delete Note
+    const deleteNote = async (id) => {
+        try {
+            await axios.delete(`http://localhost:5000/notes/${id}`);
+            fetchNotes();
+        } catch (err) {
+            console.log(err);
+        }
     };
 
-    // Send Chat
+    // 🔥 Chat
     const sendMessage = () => {
         if (!message.trim()) return;
 
@@ -53,22 +81,22 @@ function Dashboard() {
 
                     <button
                         onClick={addNote}
-                        className="px-4 py-2 bg-purple-500 rounded hover:scale-105 transition"
+                        className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded hover:scale-105 transition"
                     >
                         Add
                     </button>
                 </div>
 
-                {/* Notes */}
-                {notes.map((note, index) => (
+                {/* Notes List */}
+                {notes.map((note) => (
                     <div
-                        key={index}
+                        key={note._id}
                         className="bg-white/10 p-3 rounded mb-2 flex justify-between items-center"
                     >
-                        <span>{note}</span>
+                        <span>{note.title}</span>
 
                         <button
-                            onClick={() => deleteNote(index)}
+                            onClick={() => deleteNote(note._id)}
                             className="text-red-400 hover:text-red-600"
                         >
                             ✖
@@ -101,7 +129,7 @@ function Dashboard() {
                     ))}
                 </div>
 
-                {/* Input */}
+                {/* Chat Input */}
                 <div className="flex gap-2">
                     <input
                         value={message}
@@ -112,7 +140,7 @@ function Dashboard() {
 
                     <button
                         onClick={sendMessage}
-                        className="px-4 py-2 bg-purple-500 rounded hover:scale-105 transition"
+                        className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded hover:scale-105 transition"
                     >
                         Send
                     </button>
