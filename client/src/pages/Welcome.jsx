@@ -26,9 +26,14 @@ function Welcome() {
   bg-white/10 backdrop-blur-lg border border-white/20 
   hover:bg-white/20 hover:scale-105 
   transition duration-300 shadow-lg mx-5">Login</button>
+
+                <button
+                    onClick={() => navigate("/signup")}
+                    className="px-6 py-3 rounded-lg border border-white text-white font-semibold hover:bg-white hover:text-black transition"
+                >
+                    Signup ✨
+                </button>
             </div>
-
-
             <div className="z-10 hidden md:block">
                 <img
                     src="./image.png"

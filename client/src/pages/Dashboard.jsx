@@ -119,8 +119,8 @@ function Dashboard() {
                         >
                             <span
                                 className={`inline-block px-3 py-2 rounded ${msg.type === "user"
-                                        ? "bg-purple-500"
-                                        : "bg-gray-700"
+                                    ? "bg-purple-500"
+                                    : "bg-gray-700"
                                     }`}
                             >
                                 {msg.text}
@@ -143,6 +143,15 @@ function Dashboard() {
                         className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded hover:scale-105 transition"
                     >
                         Send
+                    </button>
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem("token");
+                            navigate("/login");
+                        }}
+                        className="bg-red-500 px-4 py-2 rounded-lg"
+                    >
+                        Logout 🚪
                     </button>
                 </div>
             </div>
