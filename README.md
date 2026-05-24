@@ -2,7 +2,7 @@
 
 A full-stack AI-powered notes application built using MERN stack.
 
-## ✨ Features
+# ✨ Features
 
 - 📝 Create, Read, Delete Notes
 - 🔐 User Authentication (Login/Signup)
