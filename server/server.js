@@ -88,12 +88,20 @@ app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
 
+        console.log("Email entered:", email);
+
         const user = await User.findOne({ email });
+
+        console.log("User found:", user);
+
         if (!user) {
             return res.status(400).json({ msg: "User not found" });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
+
+        console.log("Password Match:", isMatch);
+
         if (!isMatch) {
             return res.status(400).json({ msg: "Wrong password" });
         }
@@ -103,10 +111,10 @@ app.post("/login", async (req, res) => {
         res.json({ token });
 
     } catch (err) {
+        console.log(err);
         res.status(500).json({ error: err.message });
     }
 });
-
 
 // ================= AI CHAT =================
 
