@@ -16,7 +16,7 @@ export default function Signup() {
         }
 
         try {
-            await axios.post("http://localhost:5000/register", {
+            await axios.post("https://nexora-notes-ai.onrender.com/register", {
                 name,
                 email,
                 password,
